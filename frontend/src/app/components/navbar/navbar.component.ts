@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 
@@ -17,7 +18,7 @@ export class NavbarComponent {
 
   cartCount = this.cartService.itemCount;
 
-  currentUser = this.authService.getCurrentUser;
+  currentUser = toSignal(this.authService.currentUser$, { initialValue: null });
 
   isAdmin = computed(() => this.currentUser()?.role === 'Admin');
 

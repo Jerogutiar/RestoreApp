@@ -5,10 +5,10 @@ import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/user.model';
 
 @Component({
-    selector: 'app-order-list',
-    standalone: true,
-    imports: [CommonModule, RouterLink],
-    template: `
+  selector: 'app-order-list',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  template: `
     <div class="min-h-screen bg-gray-50 p-6">
       <div class="max-w-5xl mx-auto">
         <h1 class="text-3xl font-bold text-gray-900 mb-8">📦 Mis Pedidos</h1>
@@ -33,7 +33,7 @@ import { Order } from '../../models/user.model';
                     <span class="text-sm text-gray-500">Pedido #{{ order.id }}</span>
                     <p class="text-lg font-bold text-gray-900">\${{ order.total.toFixed(2) }}</p>
                     <p class="text-sm text-gray-400">{{ order.createdAt | date:'medium' }}</p>
-                    <p class="text-sm text-gray-500 mt-1">{{ order.orderItems?.length || 0 }} producto(s)</p>
+                    <p class="text-sm text-gray-500 mt-1">{{ order.orderItems.length || 0 }} producto(s)</p>
                   </div>
                   <div class="flex items-center gap-3">
                     <span class="px-3 py-1 rounded-full text-xs font-semibold"
@@ -59,50 +59,50 @@ import { Order } from '../../models/user.model';
   `
 })
 export class OrderListComponent implements OnInit {
-    orders = signal<Order[]>([]);
-    loading = signal(true);
+  orders = signal<Order[]>([]);
+  loading = signal(true);
 
-    constructor(private orderService: OrderService) { }
+  constructor(private orderService: OrderService) { }
 
-    ngOnInit() {
-        this.loadOrders();
-    }
+  ngOnInit() {
+    this.loadOrders();
+  }
 
-    loadOrders() {
-        this.loading.set(true);
-        this.orderService.getOrders().subscribe({
-            next: (orders) => {
-                this.orders.set(orders);
-                this.loading.set(false);
-            },
-            error: () => this.loading.set(false)
-        });
-    }
+  loadOrders() {
+    this.loading.set(true);
+    this.orderService.getOrders().subscribe({
+      next: (orders) => {
+        this.orders.set(orders);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false)
+    });
+  }
 
-    cancelOrder(order: Order) {
-        if (!confirm('¿Estás seguro de cancelar este pedido?')) return;
-        this.orderService.cancelOrder(order.id).subscribe({
-            next: () => this.loadOrders()
-        });
-    }
+  cancelOrder(order: Order) {
+    if (!confirm('¿Estás seguro de cancelar este pedido?')) return;
+    this.orderService.cancelOrder(order.id).subscribe({
+      next: () => this.loadOrders()
+    });
+  }
 
-    getStatusClass(status: string): string {
-        const map: Record<string, string> = {
-            'Pending': 'bg-yellow-100 text-yellow-800',
-            'Preparing': 'bg-blue-100 text-blue-800',
-            'Delivered': 'bg-green-100 text-green-800',
-            'Cancelled': 'bg-red-100 text-red-800'
-        };
-        return map[status] || 'bg-gray-100 text-gray-800';
-    }
+  getStatusClass(status: string): string {
+    const map: Record<string, string> = {
+      'Pending': 'bg-yellow-100 text-yellow-800',
+      'Preparing': 'bg-blue-100 text-blue-800',
+      'Delivered': 'bg-green-100 text-green-800',
+      'Cancelled': 'bg-red-100 text-red-800'
+    };
+    return map[status] || 'bg-gray-100 text-gray-800';
+  }
 
-    getStatusLabel(status: string): string {
-        const map: Record<string, string> = {
-            'Pending': '⏳ Pendiente',
-            'Preparing': '👨‍🍳 Preparando',
-            'Delivered': '✅ Entregado',
-            'Cancelled': '❌ Cancelado'
-        };
-        return map[status] || status;
-    }
+  getStatusLabel(status: string): string {
+    const map: Record<string, string> = {
+      'Pending': '⏳ Pendiente',
+      'Preparing': '👨‍🍳 Preparando',
+      'Delivered': '✅ Entregado',
+      'Cancelled': '❌ Cancelado'
+    };
+    return map[status] || status;
+  }
 }
