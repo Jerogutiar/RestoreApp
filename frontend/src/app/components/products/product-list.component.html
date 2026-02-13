@@ -1,0 +1,85 @@
+<div class="min-h-screen bg-gray-50 pb-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+    
+    <!-- Top Bar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Our Menu</h1>
+        <p class="text-gray-500 mt-1">Choose from our delicious selection</p>
+      </div>
+
+      <!-- Search -->
+      <div class="relative w-full md:w-96">
+        <input 
+          type="text" 
+          [ngModel]="searchTerm()" 
+          (ngModelChange)="searchTerm.set($event)"
+          placeholder="Search food..." 
+          class="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-[#22c55e] focus:border-transparent outline-none transition-all"
+        />
+        <svg class="w-5 h-5 text-gray-400 absolute left-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Categories (Visual Only for now, simulates filters) -->
+    <div class="flex gap-3 overflow-x-auto pb-6 no-scrollbar">
+      <button class="px-6 py-2 bg-gray-900 text-white rounded-full font-semibold text-sm whitespace-nowrap shadow-md">All</button>
+      <button class="px-6 py-2 bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-full font-semibold text-sm whitespace-nowrap transition-all">Burgers</button>
+      <button class="px-6 py-2 bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-full font-semibold text-sm whitespace-nowrap transition-all">Sides</button>
+      <button class="px-6 py-2 bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 rounded-full font-semibold text-sm whitespace-nowrap transition-all">Drinks</button>
+    </div>
+
+    <!-- Product Grid -->
+    @if (loading()) {
+      <div class="flex justify-center py-20">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#22c55e]"></div>
+      </div>
+    } @else if (products().length === 0) {
+      <div class="text-center py-20">
+        <p class="text-gray-500 text-lg">No products found matching your search.</p>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        @for (product of products(); track product.id) {
+          <div class="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 group overflow-hidden border border-gray-100 flex flex-col">
+            <!-- Image -->
+            <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
+               <img 
+                 [src]="product.linkImage || 'https://placehold.co/400x300/e2e8f0/64748b?text=' + product.name" 
+                 [alt]="product.name"
+                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+               />
+               <!-- Badge (optional) -->
+               <!-- <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded uppercase tracking-wider text-gray-800 shadow-sm">Popular</span> -->
+            </div>
+
+            <!-- Content -->
+            <div class="p-5 flex-1 flex flex-col">
+              <div class="flex-1">
+                <div class="flex justify-between items-start mb-2">
+                  <h3 class="font-bold text-gray-900 text-lg leading-tight">{{ product.name }}</h3>
+                  <span class="text-[#22c55e] font-bold text-lg">\${{ product.price.toFixed(2) }}</span>
+                </div>
+                <p class="text-gray-500 text-sm line-clamp-2 mb-4">{{ product.description }}</p>
+              </div>
+
+              <!-- Action -->
+              @if (!isAdmin()) {
+                <button 
+                  (click)="addToCart(product)" 
+                  class="w-full bg-gray-50 hover:bg-[#22c55e] hover:text-white text-gray-900 font-semibold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 group-hover:bg-gray-100 group-hover:hover:bg-[#22c55e]">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  Add to order
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

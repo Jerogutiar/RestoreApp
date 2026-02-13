@@ -1,0 +1,90 @@
+<div class="min-h-screen bg-gray-50 p-6 font-sans">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-extrabold text-gray-900 mb-8 tracking-tight">Recent Orders</h1>
+
+    @if (loading()) {
+      <div class="flex justify-center py-12">
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-green-500"></div>
+      </div>
+    } @else if (orders().length === 0) {
+      <div class="bg-white rounded-2xl shadow-sm p-12 text-center">
+        <div class="bg-green-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">No orders yet</h3>
+        <p class="text-gray-500 mb-8">Start exploring our delicious menu!</p>
+        <button [routerLink]="['/products']" class="bg-[#22c55e] hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-green-500/30 transition-all transform hover:scale-105">
+          Order Now
+        </button>
+      </div>
+    } @else {
+      <div class="space-y-4">
+        @for (order of orders(); track order.id) {
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 transition-all hover:shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+            
+            <!-- Icon & Info -->
+            <div class="flex items-start gap-4">
+               <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0" 
+                    [class.bg-green-100]="order.status === 'Delivered'"
+                    [class.text-green-600]="order.status === 'Delivered'"
+                    [class.bg-yellow-100]="order.status === 'Pending'"
+                    [class.text-yellow-600]="order.status === 'Pending'"
+                    [class.bg-blue-100]="order.status === 'Preparing'"
+                    [class.text-blue-600]="order.status === 'Preparing'"
+                    [class.bg-red-100]="order.status === 'Cancelled'"
+                    [class.text-red-600]="order.status === 'Cancelled'">
+                  @if (order.status === 'Delivered') { <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> }
+                  @else if (order.status === 'Pending') { <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> }
+                  @else if (order.status === 'Preparing') { <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg> }
+                  @else { <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> }
+               </div>
+               
+               <div>
+                  <h3 class="font-bold text-gray-900 border-b border-dashed border-gray-300 inline-block pb-0.5 mb-1 cursor-pointer hover:text-green-600 transition-colors" [routerLink]="['/orders', order.id]">
+                    Order #ORD-{{ order.id }}
+                  </h3>
+                  <div class="text-sm text-gray-500 flex items-center gap-2">
+                    <span>📅 {{ order.createdAt | date:'mediumDate' }}</span>
+                    <span>•</span>
+                    <span>{{ order.orderItems?.length || 0 }} Items</span>
+                  </div>
+               </div>
+            </div>
+
+            <!-- Price & Status -->
+            <div class="flex items-center gap-6">
+               <div class="text-right">
+                  <span class="block font-bold text-gray-900 text-lg">\${{ order.total.toFixed(2) }}</span>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide"
+                        [class.bg-green-100]="order.status === 'Delivered'"
+                        [class.text-green-800]="order.status === 'Delivered'"
+                        [class.bg-yellow-100]="order.status === 'Pending'"
+                        [class.text-yellow-800]="order.status === 'Pending'"
+                        [class.bg-blue-100]="order.status === 'Preparing'"
+                        [class.text-blue-800]="order.status === 'Preparing'"
+                        [class.bg-red-100]="order.status === 'Cancelled'"
+                        [class.text-red-800]="order.status === 'Cancelled'">
+                    {{ order.status }}
+                  </span>
+               </div>
+
+               <div class="flex gap-2">
+                  <button [routerLink]="['/orders', order.id]" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold transition-colors">
+                    Details
+                  </button>
+                  @if (order.status === 'Pending') {
+                    <button (click)="cancelOrder(order)" class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg text-sm font-semibold transition-colors border border-red-200">
+                      Cancel
+                    </button>
+                  }
+               </div>
+            </div>
+
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

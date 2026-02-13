@@ -1,0 +1,65 @@
+<nav class="bg-white shadow-sm sticky top-0 z-50 font-sans">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16">
+      
+      <!-- Logo + Left Nav -->
+      <div class="flex items-center">
+        <a routerLink="/" class="flex-shrink-0 flex items-center gap-2 group cursor-pointer hover:opacity-80 transition-opacity">
+          <div class="bg-green-100 text-[#22c55e] p-2 rounded-lg group-hover:bg-[#22c55e] group-hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </div>
+          <span class="font-extrabold text-xl text-gray-900 tracking-tight">RestorApp</span>
+        </a>
+        
+        <!-- Desktop Menu -->
+        <div class="hidden md:ml-10 md:flex md:space-x-8">
+          @if (isAdmin()) {
+            <a routerLink="/admin/dashboard" routerLinkActive="text-[#22c55e] border-b-2 border-[#22c55e]" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-[#22c55e] transition-colors h-16">Dashboard</a>
+            <a routerLink="/admin/products" routerLinkActive="text-[#22c55e] border-b-2 border-[#22c55e]" class="text-gray-500 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-[#22c55e] transition-colors h-16">Products</a>
+            <a routerLink="/admin/orders" routerLinkActive="text-[#22c55e] border-b-2 border-[#22c55e]" class="text-gray-500 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-[#22c55e] transition-colors h-16">Orders</a>
+          } @else {
+            <a routerLink="/products" routerLinkActive="text-[#22c55e] border-b-2 border-[#22c55e]" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-[#22c55e] transition-colors h-16">Menu</a>
+            <a routerLink="/orders" routerLinkActive="text-[#22c55e] border-b-2 border-[#22c55e]" class="text-gray-500 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium hover:text-[#22c55e] transition-colors h-16">My Orders</a>
+          }
+        </div>
+      </div>
+
+      <!-- Right Nav -->
+      <div class="flex items-center gap-4">
+        
+        @if (!isAdmin()) {
+          <!-- Cart -->
+          <a routerLink="/cart" class="relative p-2 text-gray-400 hover:text-gray-500 transition-colors">
+            <span class="sr-only">View cart</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            @if (cartCount() > 0) {
+              <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-[#22c55e] rounded-full">
+                {{ cartCount() }}
+              </span>
+            }
+          </a>
+        }
+
+        <!-- Profile / Logout -->
+        <div class="flex items-center gap-3 ml-2 pl-4 border-l border-gray-200">
+          <div class="hidden md:block text-right">
+            <p class="text-sm font-semibold text-gray-900">{{ userName() }}</p>
+            <p class="text-xs text-gray-500 uppercase">{{ isAdmin() ? 'Admin' : 'Customer' }}</p>
+          </div>
+          
+          <button (click)="logout()" class="p-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition-colors flex items-center justify-center" title="Log out">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+             <span class="ml-2 text-sm font-medium hidden md:inline">Log Out</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</nav>
